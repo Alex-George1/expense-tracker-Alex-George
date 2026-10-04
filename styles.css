@@ -26,7 +26,7 @@ body {
 
 .page-shell {
   position: relative;
-  padding: 1rem;
+  /* padding: 1rem; */
 }
 
 .container-xxl {
@@ -259,11 +259,15 @@ body {
 
 .modal-content {
   color: var(--text);
-  background: #000;
+}
+
+.modal-content.card-ui {
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(14px);
 }
 
 .modal-backdrop.show {
-  opacity: 1;
+  opacity: 0.55;
   background-color: #000;
 }
 

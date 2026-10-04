@@ -134,11 +134,11 @@ function bindEvents() {
   elements.openChart.addEventListener('click', openChartModal);
   elements.dayModal.addEventListener('hidden.bs.modal', clearForm);
   elements.chartModalElement.addEventListener('shown.bs.modal', scheduleChartRender);
-  elements.dayModal.querySelectorAll('[data-bs-dismiss="modal"]').forEach((button) => {
-    button.addEventListener('click', () => elements.dayModalInstance.hide());
-  });
-  elements.chartModalElement.querySelectorAll('[data-bs-dismiss="modal"]').forEach((button) => {
-    button.addEventListener('click', () => elements.chartModalInstance.hide());
+  document.querySelectorAll('[data-modal-close]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const target = button.getAttribute('data-modal-close');
+      closeModal(target === 'chartModal' ? elements.chartModalElement : elements.dayModal);
+    });
   });
 }
 
@@ -589,6 +589,19 @@ function createSyntheticLog(transaction) {
 
 function openChartModal() {
   elements.chartModalInstance.show();
+}
+
+function closeModal(element) {
+  const activeElement = document.activeElement;
+  if (element && activeElement && element.contains(activeElement) && typeof activeElement.blur === 'function') {
+    activeElement.blur();
+  }
+
+  if (element === elements.chartModalElement) {
+    elements.chartModalInstance.hide();
+  } else if (element === elements.dayModal) {
+    elements.dayModalInstance.hide();
+  }
 }
 
 function scheduleChartRender() {
