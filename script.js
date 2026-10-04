@@ -47,7 +47,6 @@ function bindElements() {
   const ids = [
     'calendarTitle',
     'calendarGrid',
-    'monthSummary',
     'monthOverviewTitle',
     'monthTrends',
     'totalIncome',
@@ -66,7 +65,6 @@ function bindElements() {
     'transactionCategory',
     'transactionDate',
     'transactionDescription',
-    'transactionModal',
     'formTitle',
     'cancelEdit',
     'resetForm',
@@ -89,8 +87,8 @@ function bindElements() {
 
   elements.dayModal = document.getElementById('dayModal');
   elements.chartModalElement = document.getElementById('chartModal');
-  elements.dayModalInstance = bootstrap.Modal.getOrCreateInstance(elements.dayModal);
-  elements.chartModalInstance = bootstrap.Modal.getOrCreateInstance(elements.chartModalElement);
+  elements.dayModalInstance = getModalController(elements.dayModal);
+  elements.chartModalInstance = getModalController(elements.chartModalElement);
 }
 
 function initDateState() {
@@ -135,17 +133,22 @@ function bindEvents() {
   elements.cancelEdit.addEventListener('click', clearEditingState);
   elements.openChart.addEventListener('click', openChartModal);
   elements.dayModal.addEventListener('hidden.bs.modal', clearForm);
-  elements.chartModalElement.addEventListener('shown.bs.modal', renderChart);
+  elements.chartModalElement.addEventListener('shown.bs.modal', scheduleChartRender);
+  elements.dayModal.querySelectorAll('[data-bs-dismiss="modal"]').forEach((button) => {
+    button.addEventListener('click', () => elements.dayModalInstance.hide());
+  });
+  elements.chartModalElement.querySelectorAll('[data-bs-dismiss="modal"]').forEach((button) => {
+    button.addEventListener('click', () => elements.chartModalInstance.hide());
+  });
 }
 
 function refreshAll() {
   syncCategoryOptions();
   refreshDashboard();
   refreshCalendar();
-  refreshMonthSummary();
   refreshLogs();
-  if (state.chartInstance) {
-    renderChart();
+  if (state.chartInstance && isChartModalVisible()) {
+    scheduleChartRender();
   }
 }
 
@@ -160,54 +163,49 @@ function refreshDashboard() {
 }
 
 function refreshCalendar() {
-  const monthDate = new Date(state.currentMonth);
-  const year = monthDate.getFullYear();
-  const month = monthDate.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startingOffset = firstDay.getDay();
+  const monthDate = startOfMonth(state.currentMonth);
+  const monthCells = getMonthCalendarCells(monthDate);
   const today = formatDate(new Date());
+  const monthLabel = monthDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
-  elements.calendarTitle.textContent = firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-  elements.monthOverviewTitle.textContent = firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  elements.calendarTitle.textContent = monthLabel;
+  elements.monthOverviewTitle.textContent = monthLabel;
   elements.monthTrends.innerHTML = '';
   elements.calendarGrid.innerHTML = '';
 
-  for (let i = 0; i < startingOffset; i += 1) {
-    const emptyCell = document.createElement('button');
-    emptyCell.type = 'button';
-    emptyCell.className = 'calendar-day is-empty';
-    emptyCell.setAttribute('aria-hidden', 'true');
-    elements.calendarGrid.appendChild(emptyCell);
-  }
-
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const dateValue = formatDate(new Date(year, month, day));
-    const dailyTotals = getDailyTotals(dateValue);
-    const net = dailyTotals.income - dailyTotals.expense;
+  monthCells.forEach((cellData) => {
     const cell = document.createElement('button');
     cell.type = 'button';
-    cell.className = 'calendar-day';
-    if (dateValue === today) {
+    cell.className = `calendar-day${cellData.isEmpty ? ' is-empty' : ''}`;
+
+    if (cellData.isEmpty) {
+      cell.setAttribute('aria-hidden', 'true');
+      cell.disabled = true;
+      elements.calendarGrid.appendChild(cell);
+      return;
+    }
+
+    const dailyTotals = getDailyTotals(cellData.dateValue);
+    const net = dailyTotals.income - dailyTotals.expense;
+
+    if (cellData.dateValue === today) {
       cell.classList.add('is-today');
     }
-    if (dateValue === state.selectedDate) {
+    if (cellData.dateValue === state.selectedDate) {
       cell.classList.add('is-selected');
     }
-    cell.setAttribute('aria-label', `${formatReadableDate(dateValue)}. Balance ${formatCurrency(net)}.`);
+    const readableDate = formatReadableDate(cellData.dateValue);
+    cell.title = `${readableDate} - Balance ${formatCurrency(net)}`;
+    cell.setAttribute('aria-label', `${readableDate}. Balance ${formatCurrency(net)}.`);
     cell.innerHTML = `
-      <div class="day-number">
-        <span>${day}</span>
-        <span class="badge ${getBadgeClass(net)}">${dailyTotals.count}</span>
-      </div>
+      <div class="day-number">${cellData.dayNumber}</div>
       <div class="day-total ${getBalanceClass(net)}">${formatSignedCurrency(net)}</div>
-      <div class="day-subtext">${dailyTotals.count} transaction${dailyTotals.count === 1 ? '' : 's'}</div>
     `;
-    cell.addEventListener('click', () => openDayModal(dateValue));
+    cell.addEventListener('click', () => selectDay(cellData.dateValue));
     elements.calendarGrid.appendChild(cell);
-  }
+  });
 
-  const monthTransactions = getTransactionsForMonth(year, month);
+  const monthTransactions = getTransactionsForMonth(monthDate.getFullYear(), monthDate.getMonth());
   const monthIncome = sumByType(monthTransactions, 'income');
   const monthExpenses = sumByType(monthTransactions, 'expense');
   const monthBalance = monthIncome - monthExpenses;
@@ -219,32 +217,26 @@ function refreshCalendar() {
   ].join('');
 }
 
-function refreshMonthSummary() {
-  const monthTransactions = getTransactionsForMonth(state.currentMonth.getFullYear(), state.currentMonth.getMonth());
-  const income = sumByType(monthTransactions, 'income');
-  const expenses = sumByType(monthTransactions, 'expense');
-  const balance = income - expenses;
+function getMonthCalendarCells(monthDate) {
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startingOffset = new Date(year, month, 1).getDay();
+  const cells = [];
 
-  elements.monthSummary.innerHTML = `
-    <div class="col-md-4">
-      <div class="metric-card">
-        <span>Month income</span>
-        <strong>${formatCurrency(income)}</strong>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="metric-card">
-        <span>Month expenses</span>
-        <strong>${formatCurrency(expenses)}</strong>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="metric-card">
-        <span>Month balance</span>
-        <strong>${formatCurrency(balance)}</strong>
-      </div>
-    </div>
-  `;
+  for (let index = 0; index < startingOffset; index += 1) {
+    cells.push({ isEmpty: true });
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    cells.push({
+      isEmpty: false,
+      dayNumber: day,
+      dateValue: formatDate(new Date(year, month, day)),
+    });
+  }
+
+  return cells;
 }
 
 function refreshLogs() {
@@ -286,7 +278,7 @@ function refreshLogs() {
     .join('');
 }
 
-function openDayModal(dateValue) {
+function selectDay(dateValue) {
   state.selectedDate = dateValue;
   elements.transactionDate.value = dateValue;
   elements.dayModalLabel.textContent = formatReadableDate(dateValue);
@@ -394,6 +386,10 @@ function clearEditingState() {
 
 function clearForm() {
   clearEditingState();
+}
+
+function openDayModal(dateValue) {
+  selectDay(dateValue);
 }
 
 function handleSubmit(event) {
@@ -593,6 +589,43 @@ function createSyntheticLog(transaction) {
 
 function openChartModal() {
   elements.chartModalInstance.show();
+}
+
+function scheduleChartRender() {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(renderChart);
+  });
+}
+
+function isChartModalVisible() {
+  return elements.chartModalElement.classList.contains('show');
+}
+
+function getModalController(element) {
+  if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    return bootstrap.Modal.getOrCreateInstance(element);
+  }
+
+  return {
+    show() {
+      if (element) {
+        element.classList.add('show');
+        element.style.display = 'block';
+        window.requestAnimationFrame(() => {
+          element.dispatchEvent(new Event('shown.bs.modal'));
+        });
+      }
+    },
+    hide() {
+      if (element) {
+        element.classList.remove('show');
+        element.style.display = 'none';
+        window.requestAnimationFrame(() => {
+          element.dispatchEvent(new Event('hidden.bs.modal'));
+        });
+      }
+    },
+  };
 }
 
 function renderChart() {

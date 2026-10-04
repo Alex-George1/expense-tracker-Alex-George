@@ -11,13 +11,14 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page-shell">
+    <div class="page-shell px-0 py-0">
       <main class="container-fluid py-4 py-lg-5">
         <div class="container-xxl">
           <header class="card-ui mb-4 mb-lg-5">
             <div class="row align-items-center g-4">
               <div class="col-lg-7">
-                <p class="eyebrow mb-2">Personal finance dashboard</p>
+                <!-- Personal finance dashboard -->
+                <!--<p class="eyebrow mb-2">Personal finance dashboard</p>-->
                 <h1 class="display-5 fw-bold mb-3">Expense Tracker</h1>
                 <p class="lead mb-0 text-body-secondary">
                   Track daily income and expenses from a calendar, edit entries from each day, and keep the data saved in your browser.
@@ -25,19 +26,19 @@
               </div>
               <div class="col-lg-5">
                 <div class="row g-3">
-                  <div class="col-4">
+                  <div class="col-12 col-sm-4">
                     <div class="metric-card">
                       <span>Income</span>
                       <strong id="totalIncome">$0.00</strong>
                     </div>
                   </div>
-                  <div class="col-4">
+                  <div class="col-12 col-sm-4">
                     <div class="metric-card">
                       <span>Expenses</span>
                       <strong id="totalExpenses">$0.00</strong>
                     </div>
                   </div>
-                  <div class="col-4">
+                  <div class="col-12 col-sm-4">
                     <div class="metric-card">
                       <span>Balance</span>
                       <strong id="totalBalance">$0.00</strong>
@@ -75,8 +76,6 @@
                 <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Monthly balance calendar"></div>
               </div>
 
-              <div class="row g-3 mb-4" id="monthSummary"></div>
-
               <div class="card-ui">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
                   <div>
@@ -103,14 +102,14 @@
                   <div class="col-12">
                     <input class="form-control form-control-sm" id="logSearch" type="search" placeholder="Search descriptions, amounts, or categories" />
                   </div>
-                  <div class="col-6">
+                  <div class="col-12 col-sm-6">
                     <select class="form-select form-select-sm" id="typeFilter">
                       <option value="all">All types</option>
                       <option value="income">Income</option>
                       <option value="expense">Expense</option>
                     </select>
                   </div>
-                  <div class="col-6">
+                  <div class="col-12 col-sm-6">
                     <select class="form-select form-select-sm" id="categoryFilter">
                       <option value="all">All categories</option>
                     </select>
