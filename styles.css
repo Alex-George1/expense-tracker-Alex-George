@@ -1,0 +1,359 @@
+:root {
+  --bg: #0f172a;
+  --bg-soft: #111c36;
+  --surface: rgba(255, 255, 255, 0.08);
+  --surface-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #e5eefc;
+  --muted: #a5b4cf;
+  --brand: #f97316;
+  --brand-2: #22c55e;
+  --danger: #ef4444;
+  --shadow: 0 24px 60px rgba(2, 8, 23, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.16), transparent 28%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 24%),
+    linear-gradient(180deg, #081122 0%, var(--bg) 48%, #0b1428 100%);
+  min-height: 100vh;
+}
+
+.page-shell {
+  position: relative;
+  overflow: clip;
+}
+
+.hero-glow {
+  position: fixed;
+  inset: auto;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.hero-glow-left {
+  top: 8%;
+  left: -6rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(249, 115, 22, 0.28);
+}
+
+.hero-glow-right {
+  right: -6rem;
+  bottom: 8%;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(34, 197, 94, 0.22);
+}
+
+main,
+.modal {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-card,
+.panel-card,
+.glass-card,
+.modal-surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  border-radius: 1.5rem;
+}
+
+.hero-card,
+.panel-card {
+  padding: 1.25rem;
+}
+
+.eyebrow,
+.section-label {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.metric-card {
+  border-radius: 1.1rem;
+  padding: 1rem 0.9rem;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.metric-card span,
+.metric-card strong {
+  display: block;
+}
+
+.metric-card span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+}
+
+.metric-card strong {
+  font-size: 1.15rem;
+}
+
+.metric-income strong {
+  color: #7ee787;
+}
+
+.metric-expense strong {
+  color: #ff8b8b;
+}
+
+.metric-balance strong {
+  color: #fbbf24;
+}
+
+.btn-brand {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: #ea580c;
+  --bs-btn-hover-border-color: #ea580c;
+  --bs-btn-focus-shadow-rgb: 249, 115, 22;
+}
+
+.panel-card,
+.glass-card,
+.modal-surface {
+  color: var(--text);
+}
+
+.form-control,
+.form-select {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(249, 115, 22, 0.7);
+  box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.14);
+  color: var(--text);
+}
+
+.form-control::placeholder {
+  color: rgba(229, 238, 252, 0.55);
+}
+
+.form-control,
+.form-select,
+.btn,
+.modal-content,
+.list-group-item {
+  border-radius: 1rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.calendar-weekdays {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+}
+
+.calendar-day {
+  min-height: 7.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  padding: 0.75rem;
+  border-radius: 1rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.calendar-day:hover {
+  transform: translateY(-2px);
+  border-color: rgba(249, 115, 22, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.calendar-day.is-empty {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.calendar-day.is-today {
+  border-color: rgba(34, 197, 94, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.18);
+}
+
+.calendar-day.is-selected {
+  border-color: rgba(249, 115, 22, 0.85);
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.28);
+}
+
+.day-number {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+  font-weight: 700;
+}
+
+.day-total {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.day-total.positive {
+  color: #86efac;
+}
+
+.day-total.negative {
+  color: #fca5a5;
+}
+
+.day-total.neutral {
+  color: #f8fafc;
+}
+
+.day-subtext {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.log-list,
+.day-transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.log-list {
+  max-height: 34rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.day-transaction-list {
+  max-height: 31rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.log-item,
+.transaction-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 0.85rem;
+}
+
+.log-item .meta,
+.transaction-item .meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.badge-soft-income {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.badge-soft-expense {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+.badge-soft-neutral {
+  background: rgba(148, 163, 184, 0.15);
+  color: #e2e8f0;
+}
+
+.guide-list {
+  color: var(--muted);
+  line-height: 1.65;
+  padding-left: 1.15rem;
+}
+
+.guide-list li + li {
+  margin-top: 0.75rem;
+}
+
+.modal-content {
+  color: var(--text);
+}
+
+.chart-wrap {
+  min-height: 24rem;
+}
+
+.empty-state {
+  color: var(--muted);
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 991.98px) {
+  .calendar-day {
+    min-height: 6.8rem;
+    padding: 0.65rem;
+  }
+
+  .hero-card,
+  .panel-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .calendar-grid {
+    gap: 0.45rem;
+  }
+
+  .calendar-weekdays {
+    font-size: 0.72rem;
+  }
+
+  .calendar-day {
+    min-height: 5.8rem;
+    border-radius: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .day-total {
+    font-size: 0.9rem;
+  }
+
+  .metric-card strong {
+    font-size: 0.95rem;
+  }
+}
