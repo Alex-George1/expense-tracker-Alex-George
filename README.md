@@ -23,4 +23,4 @@ A responsive single-page expense tracker built with HTML, CSS, JavaScript, Boots
 ## Notes
 
 - The app uses CDN-hosted Bootstrap and Chart.js, so an internet connection is needed the first time the page loads.
-- If you want to change the currency format, update the formatter in `script.js`.
+- All amounts are displayed in Indian Rupees (INR).

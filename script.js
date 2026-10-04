@@ -213,9 +213,9 @@ function refreshCalendar() {
   const monthBalance = monthIncome - monthExpenses;
 
   elements.monthTrends.innerHTML = [
-    createTrendCard('Income', monthIncome, 'metric-income'),
-    createTrendCard('Expenses', monthExpenses, 'metric-expense'),
-    createTrendCard('Balance', monthBalance, 'metric-balance'),
+    createTrendCard('Income', monthIncome),
+    createTrendCard('Expenses', monthExpenses),
+    createTrendCard('Balance', monthBalance),
   ].join('');
 }
 
@@ -227,19 +227,19 @@ function refreshMonthSummary() {
 
   elements.monthSummary.innerHTML = `
     <div class="col-md-4">
-      <div class="metric-card metric-income">
+      <div class="metric-card">
         <span>Month income</span>
         <strong>${formatCurrency(income)}</strong>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="metric-card metric-expense">
+      <div class="metric-card">
         <span>Month expenses</span>
         <strong>${formatCurrency(expenses)}</strong>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="metric-card metric-balance">
+      <div class="metric-card">
         <span>Month balance</span>
         <strong>${formatCurrency(balance)}</strong>
       </div>
@@ -300,9 +300,9 @@ function refreshDayModal(dateValue) {
   const net = totals.income - totals.expense;
 
   elements.dayStats.innerHTML = [
-    createStatCard('Income', totals.income, 'metric-income'),
-    createStatCard('Expenses', totals.expense, 'metric-expense'),
-    createStatCard('Balance', net, 'metric-balance'),
+    createStatCard('Income', totals.income),
+    createStatCard('Expenses', totals.expense),
+    createStatCard('Balance', net),
   ].join('');
 
   elements.dayTransactionCount.textContent = `${dailyTransactions.length} item${dailyTransactions.length === 1 ? '' : 's'}`;
@@ -653,10 +653,10 @@ function showFormError(message) {
   elements.formAlert.classList.remove('d-none');
 }
 
-function createTrendCard(label, value, className) {
+function createTrendCard(label, value) {
   return `
     <div class="col-md-4">
-      <div class="metric-card ${className}">
+      <div class="metric-card">
         <span>${label}</span>
         <strong>${formatCurrency(value)}</strong>
       </div>
@@ -664,10 +664,10 @@ function createTrendCard(label, value, className) {
   `;
 }
 
-function createStatCard(label, value, className) {
+function createStatCard(label, value) {
   return `
     <div class="col-md-4">
-      <div class="metric-card ${className}">
+      <div class="metric-card">
         <span>${label}</span>
         <strong>${formatCurrency(value)}</strong>
       </div>
@@ -696,9 +696,9 @@ function getBadgeClass(amount) {
 }
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     maximumFractionDigits: 2,
   }).format(amount);
 }

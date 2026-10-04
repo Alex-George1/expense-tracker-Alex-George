@@ -1,15 +1,11 @@
 :root {
-  --bg: #0f172a;
-  --bg-soft: #111c36;
-  --surface: rgba(255, 255, 255, 0.08);
-  --surface-strong: rgba(255, 255, 255, 0.14);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: #e5eefc;
-  --muted: #a5b4cf;
-  --brand: #f97316;
-  --brand-2: #22c55e;
-  --danger: #ef4444;
-  --shadow: 0 24px 60px rgba(2, 8, 23, 0.45);
+  --bg: #fffdd0d5;
+  --container: #b5d7d0;
+  --card: #000000ca;
+  --line: #ffffff55;
+  --text: #fff;
+  --muted: #fff;
+  --shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 * {
@@ -24,62 +20,26 @@ body {
   margin: 0;
   font-family: "Space Grotesk", system-ui, sans-serif;
   color: var(--text);
-  background:
-    radial-gradient(circle at top left, rgba(249, 115, 22, 0.16), transparent 28%),
-    radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 24%),
-    linear-gradient(180deg, #081122 0%, var(--bg) 48%, #0b1428 100%);
+  background: var(--bg);
   min-height: 100vh;
 }
 
 .page-shell {
   position: relative;
-  overflow: clip;
+  padding: 1rem;
 }
 
-.hero-glow {
-  position: fixed;
-  inset: auto;
-  pointer-events: none;
-  filter: blur(80px);
-  opacity: 0.5;
-  z-index: 0;
+.container-xxl {
+  background: var(--container);
+  border-radius: 1.25rem;
+  padding: 1rem;
 }
 
-.hero-glow-left {
-  top: 8%;
-  left: -6rem;
-  width: 18rem;
-  height: 18rem;
-  background: rgba(249, 115, 22, 0.28);
-}
-
-.hero-glow-right {
-  right: -6rem;
-  bottom: 8%;
-  width: 20rem;
-  height: 20rem;
-  background: rgba(34, 197, 94, 0.22);
-}
-
-main,
-.modal {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-card,
-.panel-card,
-.glass-card,
-.modal-surface {
-  background: var(--surface);
-  border: 1px solid var(--border);
+.card-ui {
+  background: var(--card);
+  border: 1px solid var(--line);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
   border-radius: 1.5rem;
-}
-
-.hero-card,
-.panel-card {
   padding: 1.25rem;
 }
 
@@ -96,8 +56,8 @@ main,
   border-radius: 1.1rem;
   padding: 1rem 0.9rem;
   height: 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff14;
+  border: 1px solid var(--line);
 }
 
 .metric-card span,
@@ -115,45 +75,18 @@ main,
   font-size: 1.15rem;
 }
 
-.metric-income strong {
-  color: #7ee787;
-}
-
-.metric-expense strong {
-  color: #ff8b8b;
-}
-
-.metric-balance strong {
-  color: #fbbf24;
-}
-
-.btn-brand {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: var(--brand);
-  --bs-btn-border-color: var(--brand);
-  --bs-btn-hover-bg: #ea580c;
-  --bs-btn-hover-border-color: #ea580c;
-  --bs-btn-focus-shadow-rgb: 249, 115, 22;
-}
-
-.panel-card,
-.glass-card,
-.modal-surface {
-  color: var(--text);
-}
-
 .form-control,
 .form-select {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
+  background-color: #ffffff1a;
+  border-color: var(--line);
   color: var(--text);
 }
 
 .form-control:focus,
 .form-select:focus {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: rgba(249, 115, 22, 0.7);
-  box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.14);
+  background-color: #ffffff24;
+  border-color: #fff;
+  box-shadow: 0 0 0 0.15rem #00000040;
   color: var(--text);
 }
 
@@ -167,6 +100,24 @@ main,
 .modal-content,
 .list-group-item {
   border-radius: 1rem;
+}
+
+.btn {
+  color: #fff;
+  border-color: #6c757d;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: #000 !important;
+  border-color: #000 !important;
+  color: #fff !important;
+}
+
+.btn-outline-secondary,
+.btn-outline-light,
+.btn-outline-danger {
+  --bs-btn-color: #fff;
 }
 
 .calendar-grid {
@@ -184,8 +135,8 @@ main,
 
 .calendar-day {
   min-height: 7.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  background: #ffffff10;
   color: var(--text);
   padding: 0.75rem;
   border-radius: 1rem;
@@ -198,8 +149,8 @@ main,
 
 .calendar-day:hover {
   transform: translateY(-2px);
-  border-color: rgba(249, 115, 22, 0.5);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: #fff;
+  background: #ffffff24;
 }
 
 .calendar-day.is-empty {
@@ -208,13 +159,13 @@ main,
 }
 
 .calendar-day.is-today {
-  border-color: rgba(34, 197, 94, 0.72);
-  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.18);
+  border-color: #fff;
+  box-shadow: inset 0 0 0 1px #ffffff66;
 }
 
 .calendar-day.is-selected {
-  border-color: rgba(249, 115, 22, 0.85);
-  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.28);
+  border-color: #000;
+  box-shadow: inset 0 0 0 1px #00000055;
 }
 
 .day-number {
@@ -231,15 +182,15 @@ main,
 }
 
 .day-total.positive {
-  color: #86efac;
+  color: #fff;
 }
 
 .day-total.negative {
-  color: #fca5a5;
+  color: #fff;
 }
 
 .day-total.neutral {
-  color: #f8fafc;
+  color: #fff;
 }
 
 .day-subtext {
@@ -268,8 +219,8 @@ main,
 
 .log-item,
 .transaction-item {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff12;
+  border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 0.85rem;
 }
@@ -281,18 +232,18 @@ main,
 }
 
 .badge-soft-income {
-  background: rgba(34, 197, 94, 0.15);
-  color: #86efac;
+  background: #ffffff2b;
+  color: #fff;
 }
 
 .badge-soft-expense {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
+  background: #ffffff2b;
+  color: #fff;
 }
 
 .badge-soft-neutral {
-  background: rgba(148, 163, 184, 0.15);
-  color: #e2e8f0;
+  background: #ffffff2b;
+  color: #fff;
 }
 
 .guide-list {
@@ -309,6 +260,18 @@ main,
   color: var(--text);
 }
 
+.text-body-secondary,
+.text-success-emphasis,
+.text-danger-emphasis,
+.meta,
+.lead {
+  color: #fff !important;
+}
+
+.btn-close {
+  filter: invert(1) grayscale(1) brightness(2);
+}
+
 .chart-wrap {
   min-height: 24rem;
 }
@@ -317,9 +280,9 @@ main,
   color: var(--muted);
   text-align: center;
   padding: 2rem 1rem;
-  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border: 1px dashed var(--line);
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: #ffffff10;
 }
 
 @media (max-width: 991.98px) {
@@ -328,8 +291,7 @@ main,
     padding: 0.65rem;
   }
 
-  .hero-card,
-  .panel-card {
+  .card-ui {
     padding: 1rem;
   }
 }
