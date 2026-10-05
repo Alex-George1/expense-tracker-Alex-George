@@ -73,7 +73,6 @@ function bindElements() {
     'dayTransactionCount',
     'formAlert',
     'openChart',
-    'chartModal',
     'expenseChart',
     'prevMonth',
     'todayMonth',
@@ -199,7 +198,7 @@ function refreshCalendar() {
     cell.setAttribute('aria-label', `${readableDate}. Balance ${formatCurrency(net)}.`);
     cell.innerHTML = `
       <div class="day-number">${cellData.dayNumber}</div>
-      <div class="day-total ${getBalanceClass(net)}">${formatSignedCurrency(net)}</div>
+      <div class="day-total">${formatSignedCurrency(net)}</div>
     `;
     cell.addEventListener('click', () => selectDay(cellData.dateValue));
     elements.calendarGrid.appendChild(cell);
@@ -211,9 +210,9 @@ function refreshCalendar() {
   const monthBalance = monthIncome - monthExpenses;
 
   elements.monthTrends.innerHTML = [
-    createTrendCard('Income', monthIncome),
-    createTrendCard('Expenses', monthExpenses),
-    createTrendCard('Balance', monthBalance),
+    createMetricCard('Income', monthIncome),
+    createMetricCard('Expenses', monthExpenses),
+    createMetricCard('Balance', monthBalance),
   ].join('');
 }
 
@@ -292,9 +291,9 @@ function refreshDayModal(dateValue) {
   const net = totals.income - totals.expense;
 
   elements.dayStats.innerHTML = [
-    createStatCard('Income', totals.income),
-    createStatCard('Expenses', totals.expense),
-    createStatCard('Balance', net),
+    createMetricCard('Income', totals.income),
+    createMetricCard('Expenses', totals.expense),
+    createMetricCard('Balance', net),
   ].join('');
 
   elements.dayTransactionCount.textContent = `${dailyTransactions.length} item${dailyTransactions.length === 1 ? '' : 's'}`;
@@ -386,10 +385,6 @@ function clearEditingState() {
 
 function clearForm() {
   clearEditingState();
-}
-
-function openDayModal(dateValue) {
-  selectDay(dateValue);
 }
 
 function handleSubmit(event) {
@@ -699,7 +694,7 @@ function showFormError(message) {
   elements.formAlert.classList.remove('d-none');
 }
 
-function createTrendCard(label, value) {
+function createMetricCard(label, value) {
   return `
     <div class="col-md-4">
       <div class="metric-card">
@@ -708,37 +703,6 @@ function createTrendCard(label, value) {
       </div>
     </div>
   `;
-}
-
-function createStatCard(label, value) {
-  return `
-    <div class="col-md-4">
-      <div class="metric-card">
-        <span>${label}</span>
-        <strong>${formatCurrency(value)}</strong>
-      </div>
-    </div>
-  `;
-}
-
-function getBalanceClass(amount) {
-  if (amount > 0) {
-    return 'positive';
-  }
-  if (amount < 0) {
-    return 'negative';
-  }
-  return 'neutral';
-}
-
-function getBadgeClass(amount) {
-  if (amount > 0) {
-    return 'badge-soft-income';
-  }
-  if (amount < 0) {
-    return 'badge-soft-expense';
-  }
-  return 'badge-soft-neutral';
 }
 
 function formatCurrency(amount) {

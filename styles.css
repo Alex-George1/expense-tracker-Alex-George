@@ -24,11 +24,6 @@ body {
   min-height: 100vh;
 }
 
-.page-shell {
-  position: relative;
-  /* padding: 1rem; */
-}
-
 .container-xxl {
   background: var(--container);
   border-radius: 1.25rem;
@@ -43,7 +38,6 @@ body {
   padding: 1.25rem;
 }
 
-.eyebrow,
 .section-label {
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -102,8 +96,7 @@ body {
 .form-control,
 .form-select,
 .btn,
-.modal-content,
-.list-group-item {
+.modal-content {
   border-radius: 1rem;
 }
 
@@ -187,18 +180,6 @@ body {
   font-size: 0.9rem;
 }
 
-.day-total.positive {
-  color: #fff;
-}
-
-.day-total.negative {
-  color: #fff;
-}
-
-.day-total.neutral {
-  color: #fff;
-}
-
 .log-list,
 .day-transaction-list {
   display: flex;
@@ -242,11 +223,6 @@ body {
   color: #fff;
 }
 
-.badge-soft-neutral {
-  background: #ffffff2b;
-  color: #fff;
-}
-
 .guide-list {
   color: var(--muted);
   line-height: 1.65;
@@ -255,10 +231,6 @@ body {
 
 .guide-list li + li {
   margin-top: 0.75rem;
-}
-
-.modal-content {
-  color: var(--text);
 }
 
 .modal-content.card-ui {
