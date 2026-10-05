@@ -76,7 +76,6 @@ function bindElements() {
     'resetForm',
     'saveTransaction',
     'dayTransactionList',
-    'dayTransactionCount',
     'formAlert',
     'openChart',
     'expenseChart',
@@ -332,8 +331,6 @@ function refreshDayModal(dateValue) {
     createMetricCard('Expenses', totals.expense),
     createMetricCard('Balance', net),
   ].join('');
-
-  elements.dayTransactionCount.textContent = `${dailyTransactions.length} item${dailyTransactions.length === 1 ? '' : 's'}`;
 
   if (dailyTransactions.length === 0) {
     elements.dayTransactionList.innerHTML = `

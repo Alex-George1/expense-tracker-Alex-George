@@ -93,7 +93,7 @@
                   <div>
                     <h2 class="h4 mb-0">Transaction history</h2>
                   </div>
-                  <button class="btn btn-outline-secondary btn-sm" id="openChart" type="button">Category chart</button>
+                  <button class="btn btn-outline-secondary btn-sm" id="openChart" type="button">Expense chart</button>
                 </div>
 
                 <div class="row g-2 mb-3">
@@ -178,7 +178,7 @@
                       </div>
                       <div class="col-md-6">
                         <label class="form-label" for="transactionDate">Date</label>
-                        <input class="form-control" id="transactionDate" type="date" required />
+                        <input class="form-control" id="transactionDate" type="date" required disabled />
                         <div class="invalid-feedback">Choose a valid date.</div>
                       </div>
                       <div class="col-12">
@@ -199,7 +199,6 @@
                 <div class="card-ui h-100">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="h5 mb-0">Transactions for this day</h3>
-                    <span class="text-body-secondary small" id="dayTransactionCount">0 items</span>
                   </div>
                   <div class="day-transaction-list" id="dayTransactionList"></div>
                 </div>
