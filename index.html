@@ -55,7 +55,8 @@
                     <p class="section-label mb-1">Monthly calendar</p>
                     <h2 class="h4 mb-0" id="calendarTitle">Calendar</h2>
                   </div>
-                  <div class="d-flex gap-2">
+                  <div class="calendar-controls d-flex flex-wrap gap-2">
+                    <select class="form-select form-select-sm year-filter" id="yearFilter" aria-label="Select calendar year"></select>
                     <button class="btn btn-outline-secondary btn-sm" id="prevMonth" type="button">Previous</button>
                     <button class="btn btn-outline-secondary btn-sm" id="todayMonth" type="button">Current</button>
                     <button class="btn btn-outline-secondary btn-sm" id="nextMonth" type="button">Next</button>
@@ -124,7 +125,7 @@
                 </div>
                 <ul class="guide-list mb-0">
                   <li>Click any calendar day to add, edit, or delete transactions for that date.</li>
-                  <li>Use the modal summary to check the day income, expenses, and balance before saving.</li>
+                  <li>Use the summary to check the income, expenses, and balance for the day before saving.</li>
                   <li>Open the chart to see expense categories for the current filtered data set.</li>
                 </ul>
               </div>

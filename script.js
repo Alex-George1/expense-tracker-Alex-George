@@ -19,6 +19,12 @@ const categorySuggestions = [
   'Other',
 ];
 
+const currencyFormatter = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 2,
+});
+
 const state = {
   transactions: loadJson(storageKeys.transactions, []),
   logs: loadJson(storageKeys.logs, []),
@@ -39,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindElements();
   initDateState();
   bindEvents();
-  syncCategoryOptions();
+  syncYearOptions();
   refreshAll();
 });
 
@@ -77,6 +83,7 @@ function bindElements() {
     'prevMonth',
     'todayMonth',
     'nextMonth',
+    'yearFilter',
     'categorySuggestions',
   ];
 
@@ -112,6 +119,11 @@ function bindEvents() {
     refreshCalendar();
   });
 
+  elements.yearFilter.addEventListener('change', (event) => {
+    state.currentMonth = new Date(Number(event.target.value), state.currentMonth.getMonth(), 1);
+    refreshCalendar();
+  });
+
   elements.logSearch.addEventListener('input', (event) => {
     state.filters.search = event.target.value.trim().toLowerCase();
     refreshLogs();
@@ -128,10 +140,11 @@ function bindEvents() {
   });
 
   elements.transactionForm.addEventListener('submit', handleSubmit);
-  elements.resetForm.addEventListener('click', clearForm);
+  elements.resetForm.addEventListener('click', clearEditingState);
+  elements.dayTransactionList.addEventListener('click', handleTransactionAction);
   elements.cancelEdit.addEventListener('click', clearEditingState);
   elements.openChart.addEventListener('click', openChartModal);
-  elements.dayModal.addEventListener('hidden.bs.modal', clearForm);
+  elements.dayModal.addEventListener('hidden.bs.modal', clearEditingState);
   elements.chartModalElement.addEventListener('shown.bs.modal', scheduleChartRender);
   document.querySelectorAll('[data-modal-close]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -164,11 +177,14 @@ function refreshDashboard() {
 function refreshCalendar() {
   const monthDate = startOfMonth(state.currentMonth);
   const monthCells = getMonthCalendarCells(monthDate);
+  const monthTransactions = getTransactionsForMonth(monthDate.getFullYear(), monthDate.getMonth());
+  const dailyTotals = getDailyTotalsMap(monthTransactions);
   const today = formatDate(new Date());
   const monthLabel = monthDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
   elements.calendarTitle.textContent = monthLabel;
   elements.monthOverviewTitle.textContent = monthLabel;
+  elements.yearFilter.value = String(monthDate.getFullYear());
   elements.monthTrends.innerHTML = '';
   elements.calendarGrid.innerHTML = '';
 
@@ -184,8 +200,8 @@ function refreshCalendar() {
       return;
     }
 
-    const dailyTotals = getDailyTotals(cellData.dateValue);
-    const net = dailyTotals.income - dailyTotals.expense;
+    const totals = dailyTotals[cellData.dateValue] || emptyDailyTotals();
+    const net = totals.income - totals.expense;
 
     if (cellData.dateValue === today) {
       cell.classList.add('is-today');
@@ -204,7 +220,6 @@ function refreshCalendar() {
     elements.calendarGrid.appendChild(cell);
   });
 
-  const monthTransactions = getTransactionsForMonth(monthDate.getFullYear(), monthDate.getMonth());
   const monthIncome = sumByType(monthTransactions, 'income');
   const monthExpenses = sumByType(monthTransactions, 'expense');
   const monthBalance = monthIncome - monthExpenses;
@@ -236,6 +251,28 @@ function getMonthCalendarCells(monthDate) {
   }
 
   return cells;
+}
+
+function syncYearOptions() {
+  const currentYear = state.currentMonth.getFullYear();
+  elements.yearFilter.innerHTML = Array.from({ length: 100 }, (_, index) => 2000 + index)
+    .map((year) => `<option value="${year}">${year}</option>`)
+    .join('');
+  elements.yearFilter.value = String(currentYear);
+}
+
+function getDailyTotalsMap(transactions) {
+  return transactions.reduce((totalsByDate, transaction) => {
+    const totals = totalsByDate[transaction.date] || emptyDailyTotals();
+    totals.count += 1;
+    totals[transaction.type] += transaction.amount;
+    totalsByDate[transaction.date] = totals;
+    return totalsByDate;
+  }, {});
+}
+
+function emptyDailyTotals() {
+  return { count: 0, income: 0, expense: 0 };
 }
 
 function refreshLogs() {
@@ -333,14 +370,16 @@ function refreshDayModal(dateValue) {
     `)
     .join('');
 
-  elements.dayTransactionList.querySelectorAll('button[data-action]').forEach((button) => {
-    button.addEventListener('click', handleTransactionAction);
-  });
 }
 
 function handleTransactionAction(event) {
-  const action = event.currentTarget.getAttribute('data-action');
-  const transactionId = event.currentTarget.getAttribute('data-id');
+  const button = event.target.closest('button[data-action]');
+  if (!button) {
+    return;
+  }
+
+  const action = button.getAttribute('data-action');
+  const transactionId = button.getAttribute('data-id');
 
   if (action === 'edit') {
     const transaction = state.transactions.find((item) => item.id === transactionId);
@@ -381,10 +420,6 @@ function clearEditingState() {
   elements.cancelEdit.classList.add('d-none');
   elements.formAlert.classList.add('d-none');
   clearValidation();
-}
-
-function clearForm() {
-  clearEditingState();
 }
 
 function handleSubmit(event) {
@@ -706,11 +741,7 @@ function createMetricCard(label, value) {
 }
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return currencyFormatter.format(amount);
 }
 
 function formatSignedCurrency(amount) {
